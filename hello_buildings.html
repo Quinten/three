@@ -1,0 +1,146 @@
+<!DOCTYPE HTML> 
+<html lang="en"> 
+	<head> 
+		<title>hello buildings</title> 
+		<meta charset="utf-8"> 
+		<style type="text/css"> 
+			body {
+				font-family: Monospace;
+				background-color: #283833;
+				margin: 0px;
+				overflow: hidden;
+				color: #d9dfbd;
+			}
+			a {
+				color: #478574;
+			}
+			h1 {
+				margin: 0;
+				padding: 0;
+				font-size: 16px;
+				line-height: 16px;
+			}
+		</style>
+		 
+	</head> 
+	<body> 
+		<script type="text/javascript" src="js/Three.js"></script> 
+		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script> 
+		<script type="text/javascript" src="js/Stats.js"></script> 
+ 
+		<script type="text/javascript">
+			
+			var geometry, material, mesh;
+			
+			function initObjects()
+			{
+				//...	
+				var light = new THREE.DirectionalLight(0xfed1ff);
+				light.position.x = 1;
+				light.position.y = 1;
+				light.position.z = 1;
+				light.position.normalize();
+				scene.addLight(light);
+				
+				geometry = new THREE.CubeGeometry(100, 1500, 100);
+        material = new THREE.MeshLambertMaterial({color: 0x478574});
+
+        mesh = new Array();
+        var i = 0;
+				for(var x = 0; x < 40; x++) 
+				{
+					for(var z = 0; z < 10; z++)
+					{
+						var geomHeight = Math.random() * 1500;
+						mesh[i] = new THREE.Mesh(geometry, material);
+						mesh[i].position.x = -1950 + (x * 100);
+						mesh[i].position.y = -1500 + Math.random() * 600;
+						mesh[i].position.z = -1500 + (z * 100);
+						scene.addChild(mesh[i]);
+						i++;
+					}
+				}
+				
+				scene.fog = new THREE.FogExp2(0x283833, 0.003);
+				
+				camera.target.position.y = -100;
+				camera.target.position.z = -1300;
+			}
+			
+			function animateObjects() 
+			{
+				//...
+				for(var i = 0; i < mesh.length; i++) 
+				{
+					mesh[i].position.z -= 10;
+					if(mesh[i].position.z < -1500){
+						mesh[i].position.z += 1000;
+						mesh[i].position.y = -1500 + Math.random() * 600;
+					}
+				}
+			}
+			
+			
+			/* general setup */
+			
+			var container, stats;
+			var camera, scene, renderer;
+			
+			init();
+			render();
+			
+			function init() 
+			{
+				initRenderer();
+				initObjects();
+				initInfo();
+				initStats();
+			}
+			
+			function render() 
+			{
+				requestAnimationFrame(render);
+				animateObjects();
+				renderer.render(scene, camera);
+				stats.update();	
+			}
+			
+			function initRenderer()
+			{
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				
+				camera = new THREE.Camera(75, window.innerWidth / window.innerHeight, 1, 10000);
+        camera.position.z = -1400;
+
+        scene = new THREE.Scene();
+
+        renderer = new THREE.WebGLRenderer();
+				renderer.sortObjects = false;
+				renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild( renderer.domElement );
+			}
+			
+			function initStats() 
+			{
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				container.appendChild(stats.domElement);
+			}
+			
+			function initInfo()
+			{
+				var info = document.createElement('div');
+				info.style.position = 'absolute';
+				info.style.top = '10px';
+				info.style.width = '100%';
+				info.style.textAlign = 'center';
+				info.innerHTML = '<h1>hello buildings</h1>by <a href="http://twitter.com/quintenclause" target="_blank">@quintenclause</a><br />made with <a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a>';
+				container.appendChild(info);
+			}
+ 
+		</script> 
+ 
+	</body> 
+</html>
