@@ -1,0 +1,141 @@
+<!DOCTYPE HTML> 
+<html lang="en"> 
+	<head> 
+		<title>hello rain</title> 
+		<meta charset="utf-8"> 
+		<style type="text/css"> 
+			body {
+				font-family: Monospace;
+				background-color: #283833;
+				margin: 0px;
+				overflow: hidden;
+				color: #d9dfbd;
+			}
+			a {
+				color: #478574;
+			}
+			h1 {
+				margin: 0;
+				padding: 0;
+				font-size: 16px;
+				line-height: 16px;
+			}
+		</style>
+		 
+	</head> 
+	<body> 
+		<script type="text/javascript" src="js/Three.js"></script> 
+		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script> 
+		<script type="text/javascript" src="js/Stats.js"></script> 
+ 
+		<script type="text/javascript">
+			
+			var geometry, material, mesh, meshContainer;
+			
+			function initObjects()
+			{
+				//...
+				var pointLight = new THREE.PointLight( 0xfed1ff );
+				pointLight.position.x = 200;
+				pointLight.position.y = 300;
+				pointLight.position.z = 500;
+				scene.addLight(pointLight);			
+				
+				geometry = new THREE.CubeGeometry(100, 100, 100);
+        material = new THREE.MeshLambertMaterial({color: 0x478574});
+        
+        meshContainer = new THREE.Object3D();
+        scene.addObject(meshContainer);
+
+        mesh = new Array();
+				for(var i = 0; i < 1000; i++) 
+				{
+					mesh[i] = new THREE.Mesh(geometry, material);
+					mesh[i].rotation.x = (Math.random() * 360) * Math.PI / 180;
+					mesh[i].rotation.y = (Math.random() * 360) * Math.PI / 180;
+					mesh[i].rotation.z = (Math.random() * 360) * Math.PI / 180;
+					var sp = Math.ceil(Math.random() * 3);
+					mesh[i].position.x = (sp == 1) ? ((Math.round(Math.random())) ? -1 : 1) * (400 + Math.random() * 2000) : (40 - Math.random() * 80) * 80;
+					mesh[i].position.y = (sp == 2) ? ((Math.round(Math.random())) ? -1 : 1) * (400 + Math.random() * 2000) : (40 - Math.random() * 80) * 80;
+					mesh[i].position.z = (sp == 3) ? ((Math.round(Math.random())) ? -1 : 1) * (400 + Math.random() * 2000) : (40 - Math.random() * 80) * 80;
+					meshContainer.addChild(mesh[i]);
+				}
+				
+				scene.fog = new THREE.FogExp2(0x283833, 0.00080);
+			}
+			
+			function animateObjects() 
+			{
+				//...
+				for(var i = 0; i < 1000; i++) 
+				{
+					mesh[i].rotation.x += 0.01;
+					mesh[i].rotation.y += 0.02;
+				}
+        meshContainer.rotation.x -= 0.005;
+			}
+			
+			
+			/* general setup */
+			
+			var container, stats;
+			var camera, scene, renderer;
+			
+			init();
+			render();
+			
+			function init() 
+			{
+				initRenderer();
+				initObjects();
+				initInfo();
+				initStats();
+			}
+			
+			function render() 
+			{
+				requestAnimationFrame(render);
+				animateObjects();
+				renderer.render(scene, camera);
+				stats.update();	
+			}
+			
+			function initRenderer()
+			{
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				
+				camera = new THREE.Camera(75, window.innerWidth / window.innerHeight, 1, 10000);
+        //camera.position.z = 1000;
+
+        scene = new THREE.Scene();
+
+        renderer = new THREE.WebGLRenderer();
+				renderer.sortObjects = false;
+				renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild( renderer.domElement );
+			}
+			
+			function initStats() 
+			{
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				container.appendChild(stats.domElement);
+			}
+			
+			function initInfo()
+			{
+				var info = document.createElement('div');
+				info.style.position = 'absolute';
+				info.style.top = '10px';
+				info.style.width = '100%';
+				info.style.textAlign = 'center';
+				info.innerHTML = '<h1>hello rain</h1>by <a href="http://twitter.com/quintenclause" target="_blank">@quintenclause</a><br />made with <a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a>';
+				container.appendChild(info);
+			}
+ 
+		</script> 
+ 
+	</body> 
+</html>
